@@ -24,7 +24,7 @@ export default function LoginForm() {
     e.preventDefault();
 
     const url =
-        selectedRole === 'user'
+      selectedRole === 'user'
         ? `${config.api.baseURL}/login/user` // 사용자일 경우 API 경로
         : `${config.api.baseURL}/login/agent`; // 공인중개사일 경우 API 경로
 
@@ -49,6 +49,9 @@ export default function LoginForm() {
       console.error('로그인 중 에러 발생:', error);
     }
   };
+
+  // 역할에 따라 회원가입 페이지 경로를 동적으로 설정
+  const registerHref = selectedRole === 'user' ? '/register-user' : '/register-agent';
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-8 rounded-lg">
@@ -97,7 +100,7 @@ export default function LoginForm() {
       </button>
 
       <div className="flex justify-center text-sm text-gray-500 mt-4 space-x-6">
-        <Link href="/register">
+        <Link href={registerHref}>
           회원가입
         </Link>
         <Link href="/find-id">
