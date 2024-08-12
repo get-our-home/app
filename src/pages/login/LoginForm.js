@@ -96,14 +96,14 @@ export default function LoginForm() {
         로그인
       </button>
 
-      <div className="flex justify-between text-sm text-gray-500 mt-4">
-        <Link href="/register" className="mx-1">
+      <div className="flex justify-center text-sm text-gray-500 mt-4 space-x-6">
+        <Link href="/register">
           회원가입
         </Link>
-        <Link href="/find-id" className="mx-1">
+        <Link href="/find-id">
           아이디 찾기
         </Link>
-        <Link href="/find-password" className="mx-1">
+        <Link href="/find-password">
           비밀번호 찾기
         </Link>
       </div>
