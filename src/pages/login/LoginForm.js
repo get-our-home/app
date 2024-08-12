@@ -87,7 +87,7 @@ export default function LoginForm() {
       </div>
 
       <div className="flex justify-end mt-2">
-        <a href="#" className="text-xs text-[#3AB6D2]">
+        <a href="/find-password" className="text-xs text-[#3AB6D2]">
           Forgot password?
         </a>
       </div>
