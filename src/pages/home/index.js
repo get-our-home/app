@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import Header from '../../components/Header';
 import Category from './Category';
 import Recommendation from './Recommendation';
-import MostSearched from './MostSearched';  // MostSearched 컴포넌트 임포트
+import MostSearched from './MostSearched';
 import Footer from '../../components/Footer';
 import SearchBar from './SearchBar';
+import { useAuth } from '../../context/AuthContext'; // useAuth 훅 임포트
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
+  const { isLoggedIn } = useAuth(); // 로그인 상태를 가져옴
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -18,7 +18,7 @@ export default function Home() {
         {isLoggedIn ? (
           <Recommendation />
         ) : (
-          <MostSearched />  // MostSearched 컴포넌트 사용
+          <MostSearched />
         )}
       </div>
       <Footer className="flex-shrink-0" />
