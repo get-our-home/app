@@ -4,13 +4,14 @@ import config from '../../config/config';  // 서버 base URL 가져오기
 
 export default function RegisterUserForm() {
   const [formData, setFormData] = useState({
-    id: '',
+    user_id: '',
+    username: '',
     password: '',
-    phone: '',
     email: '',
+    phone_number: '',
     address: '',
-    referral: '',
-    preferredType: ''
+    signUpPath: '',
+    preferredPropertyType: ''
   });
 
   const handleInputChange = (e) => {
@@ -23,8 +24,9 @@ export default function RegisterUserForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const url = `${config.api.baseURL}/register/user`;
+  
+    const url = `${config.api.baseURL}/api/users/register`;
+    const body = JSON.stringify(formData);
 
     try {
       const response = await fetch(url, {
@@ -32,19 +34,22 @@ export default function RegisterUserForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: body,
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('회원가입 성공:', data);
-        // 회원가입 성공 시 처리
+        alert('회원가입이 성공적으로 완료되었습니다.');
+        window.history.back();
       } else {
-        console.log('회원가입 실패:', response.statusText);
-        // 회원가입 실패 시 처리
+        const errorData = await response.json(); // 서버에서 반환된 에러 응답 데이터를 확인
+        console.log('회원가입 실패:', response.statusText, errorData);
+        alert(`회원가입에 실패하였습니다. ${errorData.error || '다시 시도해주세요.'}`);
       }
     } catch (error) {
       console.error('회원가입 중 에러 발생:', error);
+      alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -55,15 +60,23 @@ export default function RegisterUserForm() {
           label="아이디"
           type="text"
           required
-          name="id"
-          value={formData.id}
+          name="user_id"  // 수정: formData의 키와 동일하게 설정
+          value={formData.user_id}
+          onChange={handleInputChange}
+        />
+        <InputField
+          label="이름"
+          type="text"
+          required
+          name="username"  // 수정: formData의 키와 동일하게 설정
+          value={formData.username}
           onChange={handleInputChange}
         />
         <InputField
           label="비밀번호"
           type="password"
           required
-          name="password"
+          name="password"  // 수정: formData의 키와 동일하게 설정
           value={formData.password}
           onChange={handleInputChange}
         />
@@ -71,15 +84,15 @@ export default function RegisterUserForm() {
           label="전화번호"
           type="tel"
           required
-          name="phone"
-          value={formData.phone}
+          name="phone_number"  // 수정: formData의 키와 동일하게 설정
+          value={formData.phone_number}
           onChange={handleInputChange}
         />
         <InputField
           label="이메일"
           type="email"
           required
-          name="email"
+          name="email"  // 수정: formData의 키와 동일하게 설정
           value={formData.email}
           onChange={handleInputChange}
         />
@@ -87,7 +100,7 @@ export default function RegisterUserForm() {
           label="주소"
           type="text"
           required
-          name="address"
+          name="address"  // 수정: formData의 키와 동일하게 설정
           value={formData.address}
           onChange={handleInputChange}
         />
@@ -97,15 +110,15 @@ export default function RegisterUserForm() {
           <InputField
             label="가입 경로 - 지인, 광고, 검색, 기타"
             type="text"
-            name="referral"
-            value={formData.referral}
+            name="signUpPath"  // 수정: formData의 키와 동일하게 설정
+            value={formData.signUpPath}
             onChange={handleInputChange}
           />
           <InputField
             label="매물 선호 타입"
             type="text"
-            name="preferredType"
-            value={formData.preferredType}
+            name="preferredPropertyType"  // 수정: formData의 키와 동일하게 설정
+            value={formData.preferredPropertyType}
             onChange={handleInputChange}
           />
         </div>

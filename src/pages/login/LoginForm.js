@@ -2,11 +2,13 @@ import config from '../../config/config';
 import { useState } from 'react';
 import Link from 'next/link';
 import RoleSelector from './RoleSelector';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState('user');
-  const [credentials, setCredentials] = useState({ id: '', password: '' });
+  const [credentials, setCredentials] = useState({ user_id: '', password: '' });
+  const { login } = useAuth(); // AuthContext의 login 함수 사용
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -25,8 +27,10 @@ export default function LoginForm() {
 
     const url =
       selectedRole === 'user'
-        ? `${config.api.baseURL}/login/user` // 사용자일 경우 API 경로
-        : `${config.api.baseURL}/login/agent`; // 공인중개사일 경우 API 경로
+        ? `${config.api.baseURL}/api/users/login` // 사용자일 경우 API 경로
+        : `${config.api.baseURL}/api/agents/login`; // 공인중개사일 경우 API 경로
+
+    const body = JSON.stringify(credentials);
 
     try {
       const response = await fetch(url, {
@@ -34,37 +38,50 @@ export default function LoginForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials),
+        body: body,
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log('로그인 성공:', data);
-        // 로그인 성공 시 처리
+
+        // JWT 토큰을 AuthContext에 전달하여 로그인 상태로 설정
+        login(data.jwt);
+
+        // 로그인 성공 시 홈 화면으로 이동
+        window.location.href = '/home';
       } else {
-        console.log('로그인 실패:', response.statusText);
-        // 로그인 실패 시 처리
+        let errorMessage;
+
+        if (response.status === 404) {
+          errorMessage = '사용자를 찾을 수 없습니다.';
+        } else {
+          const errorData = await response.json();
+          errorMessage = errorData.message || '로그인에 실패했습니다. 관리자에게 문의하세요.';
+        }
+
+        console.log('로그인 실패:', errorMessage);
+        alert(`로그인 실패: ${errorMessage}`);
       }
     } catch (error) {
       console.error('로그인 중 에러 발생:', error);
+      alert('로그인 중 에러가 발생했습니다. 나중에 다시 시도해주세요.');
     }
   };
 
-  // 역할에 따라 회원가입 페이지 경로를 동적으로 설정
   const registerHref = selectedRole === 'user' ? '/register-user' : '/register-agent';
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-8 rounded-lg">
-      {/* RoleSelector 컴포넌트를 추가 */}
       <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
 
       <div className="space-y-4 px-2">
         <div className="border bg-[rgba(189,216,225,0.38)] border-[rgba(60,129,128,0.50)]">
           <input
             type="text"
-            name="id"
+            name="user_id"
             placeholder="ID"
-            value={credentials.id}
+            value={credentials.user_id}
             onChange={handleInputChange}
             className="w-full border-b border-[#3C81B7] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent"
           />

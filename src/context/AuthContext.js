@@ -6,15 +6,25 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // 예시로 localStorage에서 로그인 토큰 확인
+    // localStorage에서 JWT 토큰 확인
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
     }
   }, []);
 
+  const login = (jwtToken) => {
+    localStorage.setItem('token', jwtToken); // JWT 토큰을 localStorage에 저장
+    setIsLoggedIn(true); // 로그인 상태로 설정
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token'); // JWT 토큰 제거
+    setIsLoggedIn(false); // 로그아웃 상태로 설정
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

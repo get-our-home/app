@@ -4,7 +4,7 @@ import Recommendation from './Recommendation';
 import MostSearched from './MostSearched';
 import Footer from '../../components/Footer';
 import SearchBar from './SearchBar';
-import { useAuth } from '../../context/AuthContext'; // useAuth 훅 임포트
+import { useAuth } from '../../context/AuthContext';
 
 export default function Home() {
   const { isLoggedIn } = useAuth(); // 로그인 상태를 가져옴
